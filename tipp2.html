@@ -1,0 +1,602 @@
+<!DOCTYPE html>
+<html lang="hu">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Családi Tippverseny - 2026 Foci VB</title>
+    <style>
+        :root {
+            --primary: #002d5b;
+            --secondary: #e3003f;
+            --accent: #00a859;
+            --bg: #f8f9fa;
+            --text: #212529;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 20px;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .logo {
+            max-width: 250px;
+            margin-bottom: 20px;
+        }
+
+        h1, h2, h3 { color: var(--primary); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+            text-align: center;
+        }
+
+        th {
+            background-color: var(--primary);
+            color: white;
+            text-transform: uppercase;
+        }
+
+        tr:hover { background-color: #f1f1f1; }
+
+        button {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 15px;
+            margin: 5px;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+
+        button:hover { background-color: #004080; }
+
+        .admin-btn {
+            background-color: transparent;
+            color: #aaa;
+            font-size: 12px;
+            margin-top: 50px;
+            border: 1px solid #ddd;
+        }
+
+        .hidden { display: none !important; }
+
+        .admin-section {
+            background: #fdfbf7;
+            padding: 20px;
+            border-radius: 8px;
+            margin-top: 20px;
+            border: 2px dashed var(--secondary);
+            text-align: left;
+        }
+
+        input[type="text"], input[type="number"] {
+            padding: 10px;
+            margin: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .match-card {
+            background: var(--card-bg);
+            border: 1px solid #e0e0e0;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            text-align: left;
+        }
+
+        .match-header {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary);
+            margin-bottom: 10px;
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .prediction-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #f9f9f9;
+            padding: 8px 10px;
+            margin: 5px 0;
+            border-radius: 4px;
+            border-left: 4px solid var(--secondary);
+        }
+
+        .score-input {
+            width: 50px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .rules {
+            font-size: 15px;
+            background: #e9ecef;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: left;
+            border-left: 5px solid var(--secondary);
+        }
+
+        /* Lejátszott meccsek stílusai */
+        .played-match-result {
+            text-align: center;
+            font-size: 22px;
+            font-weight: bold;
+            color: var(--accent);
+            margin: 10px 0;
+            padding: 10px;
+            background: #e6f4ea;
+            border-radius: 5px;
+        }
+        .reveal-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .reveal-card {
+            background: #f4f4f9;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ddd;
+            text-align: center;
+        }
+        .points-badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: bold;
+            color: white;
+            margin-top: 5px;
+        }
+        .pts-5 { background-color: #00a859; }
+        .pts-3 { background-color: #ffc107; color: black; }
+        .pts-1 { background-color: #17a2b8; }
+        .pts-0 { background-color: #dc3545; }
+        
+        #githubExportArea {
+            width: 100%;
+            font-family: monospace;
+            font-size: 12px;
+            padding: 10px;
+            box-sizing: border-box;
+            background: #272822;
+            color: #f8f8f2;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <img src="https://upload.wikimedia.org/wikipedia/en/thumb/f/fa/2026_FIFA_World_Cup_Logo.svg/500px-2026_FIFA_World_Cup_Logo.svg.png" alt="2026 World Cup Logo" class="logo">
+    
+    <h1>2026 Foci VB - Családi Tippverseny</h1>
+    
+    <div class="rules">
+        <strong>🎯 Pontozási szabályok:</strong><br><br>
+        ⭐ <strong>5 pont:</strong> Telitalálat (pontos végeredmény).<br>
+        ⭐ <strong>3 pont:</strong> Helyes győztes (vagy döntetlen) ÉS pontos gólkülönbség.<br>
+        ⭐ <strong>1 pont:</strong> Csak a győztes (kimenetel) eltalálása (helyes győztes, de rossz gólkülönbség).<br>
+        ❌ <strong>0 pont:</strong> Minden más esetben.
+    </div>
+
+    <div id="playerView">
+        <h2>🏆 Pontszámok (Tabella)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Helyezés</th>
+                    <th>Játékos</th>
+                    <th>Pontszám</th>
+                </tr>
+            </thead>
+            <tbody id="scoreboardBody"></tbody>
+        </table>
+
+        <div id="playedMatchesSection" class="hidden">
+            <hr style="border: 1px solid #ddd; margin: 40px 0 20px 0;">
+            <h2>✅ Lejátszott Mérkőzések és Tippek</h2>
+            <div id="playedMatchesContainer"></div>
+        </div>
+    </div>
+
+    <div id="adminView" class="hidden admin-section">
+        <h2>🔧 Adminisztrációs Panel</h2>
+        <button onclick="logoutAdmin()" style="float: right; background: #dc3545;">Kijelentkezés</button>
+        <div style="clear:both;"></div>
+
+        <div style="background: #e9ecef; padding: 15px; border-radius: 8px; margin-bottom: 20px; border-left: 5px solid #ffc107;">
+            <h3>💾 Adatok kimentése a GitHub-hoz</h3>
+            <p style="font-size:14px;">Ha felvittél egy eredményt vagy játékost, kattints a gombra. A kapott szöveget másold ki, és a HTML fájlod kódjában cseréld ki vele a <code>GITHUB_DATA = null;</code> részt, majd töltsd fel GitHubra!</p>
+            <button onclick="generateGithubData()" style="background: #ffc107; color: black;">Kód generálása másoláshoz</button>
+            <textarea id="githubExportArea" rows="6" class="hidden" readonly></textarea>
+        </div>
+
+        <h3>1. Játékos hozzáadása</h3>
+        <input type="text" id="newPlayerName" placeholder="Játékos neve">
+        <button onclick="addPlayer()">Hozzáadás</button>
+
+        <hr style="border: 1px solid #ddd; margin: 20px 0;">
+
+        <h3>2. Új mérkőzés hozzáadása (Kézi)</h3>
+        <input type="text" id="teamA" placeholder="Hazai (pl. Brazília)">
+        <span> - </span>
+        <input type="text" id="teamB" placeholder="Vendég (pl. Németország)">
+        <button onclick="addMatch()">Mérkőzés kiírása</button>
+
+        <hr style="border: 1px solid #ddd; margin: 20px 0;">
+
+        <h3>3. Mérkőzések, Eredmények és Tippek</h3>
+        <div id="adminMatchesContainer"></div>
+    </div>
+
+    <button id="btnAdminLogin" class="admin-btn" onclick="loginAdmin()">Admin belépés</button>
+</div>
+
+<script>
+    // =========================================================================
+    // 💾 GITHUB ADATBÁZIS (IDE MÁSOLD BE AZ ADMIN FELÜLETEN GENERÁLT KÓDOT!)
+    // Ha null, akkor az alap meccsekkel indul.
+    // =========================================================================
+    let GITHUB_DATA = null;
+    // =========================================================================
+
+    let appData = {
+        lastUpdated: 0,
+        players: [], 
+        matches: [], 
+        predictions: {} 
+    };
+
+    const SECRET_KEY = "amFrQGIyMDI1"; // A "jak@b2025" Base64 kódolva
+
+    const defaultMatches2026 = [
+        { teamA: "Mexikó", teamB: "Dél-Afrika" }, { teamA: "Dél-Korea", teamB: "Csehország" },
+        { teamA: "Kanada", teamB: "Bosznia-Hercegovina" }, { teamA: "USA", teamB: "Paraguay" },
+        { teamA: "Katar", teamB: "Svájc" }, { teamA: "Brazília", teamB: "Marokkó" },
+        { teamA: "Haiti", teamB: "Skócia" }, { teamA: "Ausztrália", teamB: "Törökország" },
+        { teamA: "Németország", teamB: "Curaçao" }, { teamA: "Hollandia", teamB: "Japán" },
+        { teamA: "Elefántcsontpart", teamB: "Ecuador" }, { teamA: "Svédország", teamB: "Tunézia" },
+        { teamA: "Spanyolország", teamB: "Zöld-foki Közt." }, { teamA: "Belgium", teamB: "Egyiptom" },
+        { teamA: "Szaúd-Arábia", teamB: "Uruguay" }, { teamA: "Irán", teamB: "Új-Zéland" },
+        { teamA: "Franciaország", teamB: "Szenegál" }, { teamA: "Irak", teamB: "Norvégia" },
+        { teamA: "Argentína", teamB: "Algéria" }, { teamA: "Ausztria", teamB: "Jordánia" },
+        { teamA: "Portugália", teamB: "Kongói DK" }, { teamA: "Anglia", teamB: "Horvátország" },
+        { teamA: "Ghána", teamB: "Panama" }, { teamA: "Üzbegisztán", teamB: "Kolumbia" }
+    ];
+
+    function saveData() {
+        appData.lastUpdated = Date.now();
+        localStorage.setItem('wc2026_tipp_data', JSON.stringify(appData));
+    }
+
+    function loadData() {
+        let localData = localStorage.getItem('wc2026_tipp_data');
+        if (localData) localData = JSON.parse(localData);
+
+        // A GitHub kód mindig felülírja a helyit, ha frissebb (vagy ha van)
+        if (GITHUB_DATA) {
+            if (!localData || GITHUB_DATA.lastUpdated >= localData.lastUpdated) {
+                appData = GITHUB_DATA;
+                localStorage.setItem('wc2026_tipp_data', JSON.stringify(appData));
+            } else {
+                appData = localData; // A local storage frissebb (admin épp szerkeszt)
+            }
+        } else if (localData) {
+            appData = localData;
+        } else {
+            // Legelső indulás GITHUB_DATA nélkül
+            let timeCounter = Date.now();
+            defaultMatches2026.forEach(match => {
+                appData.matches.push({
+                    id: timeCounter++, teamA: match.teamA, teamB: match.teamB,
+                    scoreA: null, scoreB: null, isPlayed: false
+                });
+            });
+            saveData();
+        }
+    }
+
+    function calculatePoints(predA, predB, actualA, actualB) {
+        if (predA === null || predB === null || actualA === null || actualB === null || predA === "" || predB === "") return 0;
+        let pA = parseInt(predA), pB = parseInt(predB);
+        let aA = parseInt(actualA), aB = parseInt(actualB);
+
+        if (pA === aA && pB === aB) return 5;
+
+        let predDiff = pA - pB;
+        let actualDiff = aA - aB;
+        let predOutcome = Math.sign(predDiff);
+        let actualOutcome = Math.sign(actualDiff);
+
+        if (predOutcome === actualOutcome) {
+            if (predDiff === actualDiff) return 3;
+            return 1;
+        }
+        return 0;
+    }
+
+    // --- TABELLA ÉS LEJÁTSZOTT MECCSEK MEGJELENÍTÉSE ---
+    function renderViews() {
+        renderScoreboard();
+        renderPlayedMatches();
+    }
+
+    function renderScoreboard() {
+        const tbody = document.getElementById('scoreboardBody');
+        tbody.innerHTML = '';
+
+        if (appData.players.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="3" style="color:#888;">Még nincsenek játékosok.</td></tr>';
+            return;
+        }
+
+        let playerScores = appData.players.map(player => {
+            let totalPoints = 0;
+            appData.matches.forEach(match => {
+                if (match.isPlayed) {
+                    let pred = appData.predictions[`${match.id}_${player.id}`];
+                    if (pred) totalPoints += calculatePoints(pred.predA, pred.predB, match.scoreA, match.scoreB);
+                }
+            });
+            return { ...player, score: totalPoints };
+        });
+
+        playerScores.sort((a, b) => b.score - a.score);
+
+        playerScores.forEach((p, index) => {
+            let rank = index + 1;
+            if(rank === 1 && p.score > 0) rank = "🥇 1.";
+            else if(rank === 2 && p.score > 0) rank = "🥈 2.";
+            else if(rank === 3 && p.score > 0) rank = "🥉 3.";
+            else rank = rank + ".";
+
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td style="font-size: 18px;"><strong>${rank}</strong></td>
+                <td style="font-size: 18px;">${p.name}</td>
+                <td style="font-size: 18px; color: var(--secondary);"><strong>${p.score}</strong> pont</td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    function renderPlayedMatches() {
+        const container = document.getElementById('playedMatchesContainer');
+        const section = document.getElementById('playedMatchesSection');
+        container.innerHTML = '';
+        
+        let playedMatches = appData.matches.filter(m => m.isPlayed);
+        
+        if (playedMatches.length === 0) {
+            section.classList.add('hidden');
+            return;
+        }
+        
+        section.classList.remove('hidden');
+
+        // Legutóbbi meccsek elöl
+        playedMatches.reverse().forEach(match => {
+            let card = document.createElement('div');
+            card.className = 'match-card';
+
+            let html = `<div class="match-header">${match.teamA} - ${match.teamB}</div>`;
+            html += `<div class="played-match-result">Végeredmény: ${match.scoreA} - ${match.scoreB}</div>`;
+            html += `<strong>Játékosok tippjei:</strong>`;
+            
+            html += `<div class="reveal-grid">`;
+            appData.players.forEach(player => {
+                let pred = appData.predictions[`${match.id}_${player.id}`];
+                let predText = (pred && pred.predA !== "" && pred.predB !== "") ? `${pred.predA} - ${pred.predB}` : `Nem tippelt`;
+                let pts = 0;
+                let badgeClass = 'pts-0';
+
+                if (pred && pred.predA !== "" && pred.predB !== "") {
+                    pts = calculatePoints(pred.predA, pred.predB, match.scoreA, match.scoreB);
+                    if (pts === 5) badgeClass = 'pts-5';
+                    else if (pts === 3) badgeClass = 'pts-3';
+                    else if (pts === 1) badgeClass = 'pts-1';
+                }
+
+                html += `
+                    <div class="reveal-card">
+                        <strong>${player.name}</strong><br>
+                        <span>${predText}</span><br>
+                        <span class="points-badge ${badgeClass}">+${pts} pont</span>
+                    </div>
+                `;
+            });
+            html += `</div>`;
+
+            card.innerHTML = html;
+            container.appendChild(card);
+        });
+    }
+
+    // --- ADMIN ÉS GITHUB FUNKCIÓK ---
+    function loginAdmin() {
+        let pwd = prompt("Kérem az admin jelszót:");
+        if (!pwd) return;
+        if (btoa(pwd) === SECRET_KEY) {
+            document.getElementById('adminView').classList.remove('hidden');
+            document.getElementById('btnAdminLogin').classList.add('hidden');
+            renderAdminMatches();
+        } else {
+            alert("Hibás jelszó!");
+        }
+    }
+
+    function logoutAdmin() {
+        document.getElementById('adminView').classList.add('hidden');
+        document.getElementById('btnAdminLogin').classList.remove('hidden');
+        renderViews();
+    }
+
+    function generateGithubData() {
+        const area = document.getElementById('githubExportArea');
+        area.classList.remove('hidden');
+        // Készítünk egy szép JSON stringet
+        const jsonString = JSON.stringify(appData);
+        area.value = `let GITHUB_DATA = ${jsonString};`;
+        area.select();
+        document.execCommand('copy');
+        alert("A kód vágólapra másolva! Cseréld ki a HTML fájlod tetején lévő GITHUB_DATA részt erre, és töltsd fel a GitHubra!");
+    }
+
+    function addPlayer() {
+        const nameInput = document.getElementById('newPlayerName');
+        const name = nameInput.value.trim();
+        if (name) {
+            appData.players.push({ id: Date.now(), name: name });
+            nameInput.value = '';
+            saveData();
+            renderViews();
+            renderAdminMatches();
+        }
+    }
+
+    function addMatch() {
+        const teamA = document.getElementById('teamA').value.trim();
+        const teamB = document.getElementById('teamB').value.trim();
+        if (teamA && teamB) {
+            appData.matches.push({
+                id: Date.now(), teamA: teamA, teamB: teamB,
+                scoreA: null, scoreB: null, isPlayed: false
+            });
+            document.getElementById('teamA').value = '';
+            document.getElementById('teamB').value = '';
+            saveData();
+            renderAdminMatches();
+        }
+    }
+
+    function renderAdminMatches() {
+        const container = document.getElementById('adminMatchesContainer');
+        container.innerHTML = '';
+
+        appData.matches.forEach((match) => {
+            let matchCard = document.createElement('div');
+            matchCard.className = 'match-card';
+            
+            let html = `<div class="match-header">⚽ ${match.teamA} - ${match.teamB}</div>`;
+            html += `
+                <div style="background: #e3f2fd; padding: 15px; border-radius: 5px; margin-bottom: 15px;">
+                    <strong>Valós Végeredmény (Lezárás):</strong><br><br>
+                    <input type="number" id="actualA_${match.id}" class="score-input" value="${match.scoreA !== null ? match.scoreA : ''}" min="0"> - 
+                    <input type="number" id="actualB_${match.id}" class="score-input" value="${match.scoreB !== null ? match.scoreB : ''}" min="0">
+                    <button onclick="saveActualScore(${match.id})" style="padding: 8px 15px; font-size: 14px; background: #00a859;">Mentés & Zárás</button>
+                    ${match.isPlayed ? '<span style="color:green; font-weight:bold; margin-left: 10px;">Lezárva ✓</span>' : ''}
+                </div>
+            `;
+
+            html += `<strong>Játékosok tippjei:</strong>`;
+            if (appData.players.length === 0) {
+                html += `<p style="font-size:14px; color:#666;">Előbb adj hozzá játékosokat a fenti mezőben!</p>`;
+            } else {
+                appData.players.forEach(player => {
+                    let predKey = `${match.id}_${player.id}`;
+                    let pred = appData.predictions[predKey] || { predA: '', predB: '' };
+                    
+                    html += `
+                        <div class="prediction-row">
+                            <span><strong>${player.name}</strong> tippje:</span>
+                            <div>
+                                <input type="number" id="predA_${predKey}" class="score-input" value="${pred.predA}" min="0"> - 
+                                <input type="number" id="predB_${predKey}" class="score-input" value="${pred.predB}" min="0">
+                                <button onclick="savePrediction(${match.id}, ${player.id}, this)" style="padding: 5px 10px; font-size: 12px; background: var(--secondary);">Tipp Mentése</button>
+                            </div>
+                        </div>
+                    `;
+                });
+            }
+
+            matchCard.innerHTML = html;
+            container.appendChild(matchCard);
+        });
+    }
+
+    function saveActualScore(matchId) {
+        const valA = document.getElementById(`actualA_${matchId}`).value;
+        const valB = document.getElementById(`actualB_${matchId}`).value;
+        
+        let match = appData.matches.find(m => m.id === matchId);
+        if (match) {
+            if (valA !== "" && valB !== "") {
+                match.scoreA = parseInt(valA);
+                match.scoreB = parseInt(valB);
+                match.isPlayed = true;
+            } else {
+                match.scoreA = null;
+                match.scoreB = null;
+                match.isPlayed = false;
+            }
+            saveData();
+            renderAdminMatches();
+            renderViews();
+            alert("Végeredmény státusza frissítve!");
+        }
+    }
+
+    function savePrediction(matchId, playerId, btn) {
+        const predKey = `${matchId}_${playerId}`;
+        const valA = document.getElementById(`predA_${predKey}`).value;
+        const valB = document.getElementById(`predB_${predKey}`).value;
+
+        if (valA !== "" && valB !== "") {
+            appData.predictions[predKey] = { predA: parseInt(valA), predB: parseInt(valB) };
+            saveData();
+            
+            const originalText = btn.innerText;
+            const originalColor = btn.style.backgroundColor;
+            btn.innerText = "Mentve ✓";
+            btn.style.backgroundColor = "#28a745";
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.backgroundColor = originalColor;
+            }, 1500);
+        } else {
+            alert("Kérlek adj meg mindkét csapathoz egy számot!");
+        }
+    }
+
+    window.onload = function() {
+        loadData();
+        renderViews();
+    };
+</script>
+
+</body>
+</html>
