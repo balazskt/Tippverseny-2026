@@ -6,7 +6,7 @@
     <title>2026 Családi Tippverseny</title>
     <style>
         :root {
-            --primary: #c2002f; /* FIFA stílusú piros */
+            --primary: #c2002f;
             --bg: #f4f7f6;
             --card-bg: #ffffff;
             --text: #333333;
@@ -135,6 +135,15 @@
             color: #666;
             margin-bottom: 20px;
         }
+        .team-edit-row {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 15px;
+            background: #e3e8e5;
+            padding: 10px;
+            border-radius: 5px;
+        }
     </style>
 </head>
 <body>
@@ -143,18 +152,29 @@
     // =====================================================================
     // VIGYÁZAT: A GITHUBON EZT A RÉSZT KELL KICSERÉLNI AZ ADMIN PANELBŐL KIMÁSOLT KÓDRA!
     // =====================================================================
-    const DATABASE = {
+    let DATABASE = {
       "players": [],
-      "matches": [
-        { "id": 1, "t1": "Mexikó", "t2": "A2 csapat", "s1": null, "s2": null },
-        { "id": 2, "t1": "Kanada", "t2": "B2 csapat", "s1": null, "s2": null },
-        { "id": 3, "t1": "USA", "t2": "D2 csapat", "s1": null, "s2": null },
-        { "id": 4, "t1": "Mexikó", "t2": "A3 csapat", "s1": null, "s2": null },
-        { "id": 5, "t1": "Kanada", "t2": "B3 csapat", "s1": null, "s2": null },
-        { "id": 6, "t1": "USA", "t2": "D3 csapat", "s1": null, "s2": null }
-      ],
+      "matches": [],
       "tips": {}
     };
+
+    // Ha még üres a DATABASE (első futtatáskor), betöltjük mind a 104 meccset.
+    // Amikor a GitHubra exportálod a kódot, a gép ezt is felül fogja írni a tényleges adatokkal!
+    if (DATABASE.matches.length === 0) {
+        DATABASE.matches.push({ id: 1, t1: "Mexikó", t2: "A2 csapat", s1: null, s2: null });
+        DATABASE.matches.push({ id: 2, t1: "A3 csapat", t2: "A4 csapat", s1: null, s2: null });
+        DATABASE.matches.push({ id: 3, t1: "Kanada", t2: "B2 csapat", s1: null, s2: null });
+        DATABASE.matches.push({ id: 4, t1: "USA", t2: "D2 csapat", s1: null, s2: null });
+        // Csoportkör folytatása (5-72)
+        for(let i = 5; i <= 72; i++) DATABASE.matches.push({ id: i, t1: `Csoportkör ${i}. (Hazai)`, t2: `Csoportkör ${i}. (Vendég)`, s1: null, s2: null });
+        // Egyenes kiesés (73-104)
+        for(let i = 73; i <= 88; i++) DATABASE.matches.push({ id: i, t1: `Legjobb 32 (M${i})`, t2: `Legjobb 32 (M${i})`, s1: null, s2: null });
+        for(let i = 89; i <= 96; i++) DATABASE.matches.push({ id: i, t1: `Nyolcaddöntő (M${i})`, t2: `Nyolcaddöntő (M${i})`, s1: null, s2: null });
+        for(let i = 97; i <= 100; i++) DATABASE.matches.push({ id: i, t1: `Negyeddöntő (M${i})`, t2: `Negyeddöntő (M${i})`, s1: null, s2: null });
+        for(let i = 101; i <= 102; i++) DATABASE.matches.push({ id: i, t1: `Elődöntő (M${i})`, t2: `Elődöntő (M${i})`, s1: null, s2: null });
+        DATABASE.matches.push({ id: 103, t1: "Bronzmérkőzés", t2: "Bronzmérkőzés", s1: null, s2: null });
+        DATABASE.matches.push({ id: 104, t1: "Döntő", t2: "Döntő", s1: null, s2: null });
+    }
     // =====================================================================
 </script>
 
@@ -190,7 +210,7 @@
 
     <div class="admin-section" id="admin-section">
         <h2>Adminisztrációs Panel</h2>
-        <p class="info-text">Itt rögzítheted a tippeket és a végeredményeket. A végén ne felejtsd el frissíteni a GitHubot!</p>
+        <p class="info-text">Itt rögzítheted a csapatneveket, tippeket és a végeredményeket. A végén ne felejtsd el frissíteni a GitHubot!</p>
         
         <div class="match-card">
             <h3>👤 Játékos hozzáadása</h3>
@@ -200,24 +220,15 @@
             </div>
         </div>
 
-        <div class="match-card">
-            <h3>🏟️ Új mérkőzés hozzáadása</h3>
-            <div class="form-group">
-                <input type="text" id="team1" placeholder="Hazai csapat">
-                <span> - </span>
-                <input type="text" id="team2" placeholder="Vendég csapat">
-                <button class="btn" onclick="addMatch()">Hozzáadás</button>
-            </div>
-        </div>
-
-        <h3>📝 Tippek és Eredmények beírása</h3>
+        <h3>📝 Csapatok, Tippek és Eredmények</h3>
+        <p class="info-text" style="color:var(--primary);">Itt át tudod nevezni a csapatokat, amint megtörténik a sorsolás!</p>
         <div id="admin-matches-container">
             </div>
 
         <div class="match-card" style="background:#282c34; color:white; margin-top:30px;">
             <h3 style="color:#61afef;">🚀 GitHub Frissítés</h3>
             <p style="text-align:center; font-size:0.9em; margin-bottom:10px;">
-                Minden módosítás után másold ki az alábbi szöveget, nyisd meg a GitHubon az index.html fájlt, és cseréld ki vele a fenti <code>DATABASE</code> részt!
+                Másold ki az alábbi kódot, és a GitHub index.html fájljában cseréld ki vele a <code>DATABASE</code> részt!
             </p>
             <textarea id="github-export-area" class="github-export" readonly></textarea>
         </div>
@@ -225,10 +236,7 @@
 </div>
 
 <script>
-    // Az admin jelszó Base64 kódolva: jak@b2025 -> amFrQGIyMDI1
-    const ADMIN_HASH = "amFrQGIyMDI1"; 
-    
-    // Munkaváltozó, ami mindig a HTML tetején lévő DATABASE-ből indul
+    const ADMIN_HASH = "amFrQGIyMDI1"; // jak@b2025
     let appData = JSON.parse(JSON.stringify(DATABASE));
 
     function loginAdmin() {
@@ -243,7 +251,7 @@
 
     function calculatePoints(tip1, tip2, act1, act2) {
         if (act1 === null || act2 === null || tip1 === null || tip2 === null) return 0; 
-        if (tip1 === act1 && tip2 === act2) return 5; // Telitalálat
+        if (tip1 === act1 && tip2 === act2) return 5;
         
         const tipDiff = tip1 - tip2;
         const actDiff = act1 - act2;
@@ -251,15 +259,15 @@
         const actWinner = actDiff > 0 ? 1 : (actDiff < 0 ? 2 : 0);
 
         if (tipWinner === actWinner) {
-            if (tipDiff === actDiff) return 3; // Győztes és gólkülönbség is jó
-            return 1; // Csak a győztes jó
+            if (tipDiff === actDiff) return 3;
+            return 1;
         }
         return 0;
     }
 
     function generateGitHubExport() {
         const exportArea = document.getElementById('github-export-area');
-        exportArea.value = "const DATABASE = " + JSON.stringify(appData, null, 2) + ";";
+        exportArea.value = "let DATABASE = " + JSON.stringify(appData, null, 2) + ";";
     }
 
     function addPlayer() {
@@ -273,14 +281,13 @@
         }
     }
 
-    function addMatch() {
-        const t1 = document.getElementById('team1').value.trim();
-        const t2 = document.getElementById('team2').value.trim();
-        if (t1 && t2) {
-            const newId = appData.matches.length ? Math.max(...appData.matches.map(m => m.id)) + 1 : 1;
-            appData.matches.push({ id: newId, t1: t1, t2: t2, s1: null, s2: null });
-            document.getElementById('team1').value = '';
-            document.getElementById('team2').value = '';
+    function updateTeams(matchId) {
+        const t1 = document.getElementById(`edit_t1_${matchId}`).value.trim();
+        const t2 = document.getElementById(`edit_t2_${matchId}`).value.trim();
+        const match = appData.matches.find(m => m.id === matchId);
+        if (match && t1 && t2) {
+            match.t1 = t1;
+            match.t2 = t2;
             renderApp();
         }
     }
@@ -308,7 +315,6 @@
     }
 
     function renderApp() {
-        // --- PONT SZÁMÍTÁS ---
         let playerScores = appData.players.map(p => ({ id: p.id, name: p.name, points: 0 }));
         
         appData.matches.forEach(match => {
@@ -322,7 +328,6 @@
 
         playerScores.sort((a, b) => b.points - a.points);
 
-        // --- RANGLISTA ---
         const tbody = document.getElementById('leaderboard-body');
         tbody.innerHTML = '';
         if (playerScores.length === 0) {
@@ -333,7 +338,6 @@
             });
         }
 
-        // --- LEJÁTSZOTT MÉRKŐZÉSEK (Publikus) ---
         const playedContainer = document.getElementById('played-matches-container');
         playedContainer.innerHTML = '';
         let hasPlayed = false;
@@ -362,14 +366,21 @@
             playedContainer.innerHTML = '<p style="text-align:center;">Még nincs rögzített eredmény.</p>';
         }
 
-        // --- ADMIN SZEKCIÓ ---
         const adminContainer = document.getElementById('admin-matches-container');
         adminContainer.innerHTML = '';
         
         appData.matches.forEach(match => {
             let matchHtml = `
                 <div class="match-card">
-                    <h4 style="text-align:center; margin-top:0;">${match.t1} vs ${match.t2}</h4>
+                    <h4 style="text-align:center; margin-top:0;">${match.id}. Mérkőzés</h4>
+                    
+                    <div class="team-edit-row">
+                        <input type="text" id="edit_t1_${match.id}" value="${match.t1}" style="width:130px; text-align:center;">
+                        <span> vs </span>
+                        <input type="text" id="edit_t2_${match.id}" value="${match.t2}" style="width:130px; text-align:center;">
+                        <button class="btn btn-small" style="background:#555;" onclick="updateTeams(${match.id})">Átnevezés</button>
+                    </div>
+
                     <div class="form-group" style="background:#eaf2ee; padding:10px; border-radius:5px;">
                         <strong>Végeredmény:</strong>
                         <input type="number" id="m_${match.id}_s1" value="${match.s1 !== null ? match.s1 : ''}">
@@ -390,7 +401,7 @@
                                 <input type="number" id="t_${match.id}_${player.id}_s1" value="${tip ? tip.s1 : ''}" placeholder="-">
                                 <span> : </span>
                                 <input type="number" id="t_${match.id}_${player.id}_s2" value="${tip ? tip.s2 : ''}" placeholder="-">
-                                <button class="btn btn-small" style="padding:4px 8px; font-size:0.8em;" onclick="saveTip(${match.id}, ${player.id})">OK</button>
+                                <button class="btn btn-small" style="padding:4px 8px; font-size:0.8em;" onclick="saveTip(${match.id}, ${player.id})">Tipp mentése</button>
                             </div>
                         </div>
                     `;
@@ -402,11 +413,9 @@
             adminContainer.innerHTML += matchHtml;
         });
 
-        // Generáljuk a GitHubhoz szánt szöveget
         generateGitHubExport();
     }
 
-    // Inicializálás
     renderApp();
 </script>
 
